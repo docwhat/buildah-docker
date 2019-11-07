@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+docker exec \
+  buildah \
+  buildah \
+  --log-level=info \
+  "$@"
+
+# EOF

@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+cd "$(dirname "${BASH_SOURCE[0]}")"
+
+docker build \
+  --tag=buildah \
+  buildah/
+
+docker container rm -f buildah 2>/dev/null || :
+
+docker run \
+  --detach \
+  --name=buildah \
+  --net=host \
+  --privileged \
+  --tmpfs=/var/tmp \
+  --device=/dev/fuse:rw \
+  --volume=mycontainers:/var/lib/containers:rw \
+  buildah \
+  sh -c 'while true ;do sleep 100000 ; done'
+
+# docker exec buildah dnf upgrade -y
+# docker exec buildah dnf install runc buildah podman -y
+
+# Disabled
+#  --security-opt=label=disable \
+#  --security-opt=seccomp=unconfined \
+#  --device=/dev/fuse:rw \
+#  --volume=/var/lib/mycontainer:/var/lib/containers:rw,Z \
+
+# EOF
